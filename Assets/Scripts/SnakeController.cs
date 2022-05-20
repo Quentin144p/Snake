@@ -11,7 +11,8 @@ public class SnakeController : MonoBehaviour
     [SerializeField] float timeBeforeMove;
     private Rigidbody2D rb;
     private Transform tail;
-    public GameObject prefab;
+    public GameObject tailPrefab;
+    public GameObject canvasPrefab;
 
     private void Start()
     {
@@ -27,7 +28,15 @@ public class SnakeController : MonoBehaviour
         if (context.performed)
         {
             var getInput = context.ReadValue<Vector2>();
-            currentInput = Vector2Int.RoundToInt(getInput);
+            var lastInput = getInput;
+            if (getInput == lastInput)
+            {
+                currentInput = Vector2Int.RoundToInt(getInput);
+            }
+            else
+            {
+                currentInput = Vector2Int.RoundToInt(lastInput);
+            }
         }
     }
 
@@ -57,7 +66,7 @@ public class SnakeController : MonoBehaviour
         }
         else
         {
-            var instantiateTail = Instantiate(prefab, newPartPosition, Quaternion.identity);
+            var instantiateTail = Instantiate(tailPrefab, newPartPosition, Quaternion.identity);
             instantiateTail.transform.parent = tail;
             fruitEaten = false;
         }
@@ -67,5 +76,36 @@ public class SnakeController : MonoBehaviour
     {
         fruitEaten = true;
         eatenFruits++;
+    }
+
+    public void Die()
+    {
+        if (isAlive == false)
+        {
+            return;
+        }
+        isAlive = false;
+        Instantiate(canvasPrefab);
+        var score = FindObjectOfType<ScoreDisplayer>();
+        score.SetScore(eatenFruits);
+        Destroy(GameObject.Find("Tail"));
+        Destroy(this.gameObject);
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "PlayZone")
+        {
+            Debug.Log("Die");
+            Die();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.name == "tailPrefab")
+        {
+            Die();
+        }
     }
 }
