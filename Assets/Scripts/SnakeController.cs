@@ -13,6 +13,7 @@ public class SnakeController : MonoBehaviour
     private Transform tail;
     public GameObject tailPrefab;
     public GameObject canvasPrefab;
+    private ScoreDisplayer scoreDisplayer;
 
     private void Start()
     {
@@ -29,14 +30,7 @@ public class SnakeController : MonoBehaviour
         {
             var getInput = context.ReadValue<Vector2>();
             var lastInput = getInput;
-            if (getInput == lastInput)
-            {
-                currentInput = Vector2Int.RoundToInt(getInput);
-            }
-            else
-            {
-                currentInput = Vector2Int.RoundToInt(lastInput);
-            }
+            currentInput = Vector2Int.RoundToInt(getInput);
         }
     }
 
@@ -86,8 +80,8 @@ public class SnakeController : MonoBehaviour
         }
         isAlive = false;
         Instantiate(canvasPrefab);
-        var score = FindObjectOfType<ScoreDisplayer>();
-        score.SetScore(eatenFruits);
+        scoreDisplayer = FindObjectOfType<ScoreDisplayer>();
+        scoreDisplayer.SetScore(eatenFruits);
         Destroy(GameObject.Find("Tail"));
         Destroy(this.gameObject);
     }
@@ -96,7 +90,6 @@ public class SnakeController : MonoBehaviour
     {
         if (collision.tag == "PlayZone")
         {
-            Debug.Log("Die");
             Die();
         }
     }

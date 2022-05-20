@@ -3,11 +3,11 @@ using TMPro;
 
 public class ScoreDisplayer : MonoBehaviour
 {
-    private TextMeshPro tmPro;
+    private TextMeshProUGUI tmPro;
 
     private void Awake()
     {
-        tmPro = GetComponent<TextMeshPro>();
+        tmPro = GetComponent<TextMeshProUGUI>();
     }
     public void SetScore(int score)
     {
